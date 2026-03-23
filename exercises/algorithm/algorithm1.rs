@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONEaaa
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -70,13 +69,36 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    where
+        T: Ord + Copy,
+	{   
+        if list_a.length == 0 {
+            return list_b;
         }
+        if list_b.length == 0 {
+            return list_a;
+        }
+        let mut list_c = LinkedList::<T>::new();
+        let mut now1 = list_a.start;
+        let mut now2 = list_b.start;
+        while now1.is_some() && now2.is_some() {
+            let val1 = unsafe{(*now1.unwrap().as_ptr()).val};
+            let val2 = unsafe{(*now2.unwrap().as_ptr()).val};
+            if val1 < val2 {
+                list_c.add(val1);
+                now1 = unsafe{(*now1.unwrap().as_ptr()).next};
+            } else {
+                list_c.add(val2);
+                now2 = unsafe{(*now2.unwrap().as_ptr()).next};
+            }
+        }
+        let mut remaining = if now1.is_some() { now1 } else { now2 };
+        while remaining.is_some() {
+            let val = unsafe { (*remaining.unwrap().as_ptr()).val };
+            list_c.add(val);
+            remaining = unsafe { (*remaining.unwrap().as_ptr()).next };
+        }
+        list_c
 	}
 }
 
