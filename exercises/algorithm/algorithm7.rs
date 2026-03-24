@@ -2,14 +2,12 @@
 	stack
 	This question requires you to use a stack to achieve a bracket match
 */
-
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
 	data: Vec<T>,
 }
-impl<T> Stack<T> {
+impl<T: Clone> Stack<T> {
 	fn new() -> Self {
 		Self {
 			size: 0,
@@ -31,8 +29,14 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		if self.data.len() == 0 {
+			None
+		} else {
+			let temp = self.data[self.data.len() - 1].clone();
+			self.data.remove(self.data.len() - 1);
+			self.size -= 1;
+			Some(temp)
+		}
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -102,7 +106,25 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 fn bracket_match(bracket: &str) -> bool
 {
 	//TODO
-	true
+	let mut st : Stack<char> = Stack::new(); 
+	for ch in bracket.chars() {
+		if ch == '(' || ch == '[' || ch == '{' {
+			st.push(ch);
+		} else if ch == ')' || ch == ']' || ch == '}'{
+			if st.is_empty() {
+				return false;
+			}
+			let top = st.pop().unwrap();
+			if (ch == ')' && top != '(') || (ch == '}' && top != '{') || (ch == ']' && top != '[') {
+				return false;
+			}
+		}
+	}
+	if st.is_empty() {
+		true
+	} else {
+		false
+	}
 }
 
 #[cfg(test)]

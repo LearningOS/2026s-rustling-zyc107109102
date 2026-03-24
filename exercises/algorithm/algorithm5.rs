@@ -2,8 +2,6 @@
 	bfs
 	This problem requires you to implement a basic BFS algorithm
 */
-
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
@@ -31,6 +29,20 @@ impl Graph {
 		//TODO
 
         let mut visit_order = vec![];
+        let mut vis = vec![-1; 100];
+        let mut queue = VecDeque::new();
+        queue.push_back(start);
+        vis[start] = 1;
+        visit_order.push(start);
+        while let Some(u) = queue.pop_front() {
+            for &v in &self.adj[u] {
+                if vis[v] == -1 {
+                    vis[v] = 1;
+                    queue.push_back(v);    // 入队
+                    visit_order.push(v);
+                }
+            }
+        }
         visit_order
     }
 }
